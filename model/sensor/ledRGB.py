@@ -70,16 +70,19 @@ def setupLedRGB(data):
 def loopLedRGB(Serial):
 
 	# 1. 성공 메세지 리턴
-	Serial.SendCmd(str({'param': -1}))
+	Serial.SendCmd(str(
+		{
+			'msg': Define.getRtnMsg()['01'],
+			'result': '',
+			'callback': ''
+		}
+	))
 
 	# 2. 센서 프로세스 진행
 	while True:
 		for col in colors:
 			time.sleep(1)
 			setLedRGBColor(col)
-
-		# TODO temp
-		print(Serial.lock)
 
 		# GPIO.cleanup()
 

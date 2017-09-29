@@ -32,12 +32,13 @@ sys.path.append(path + "/model/sensor")             #
 # 3. LC 제작 모듈 호출
 from RS232 import RS232 # 3.1 시리얼 통신 모듈
 import util             # 3.2 유틸 모듈
+import Define           # 3.3 정의 모듈
 
 # 4. 센서 모듈 호출
 import ledRGB           # 4.1 3색 LED
-import potentiometer    # 4.2 가변 저항
-import soundSensor      # 4.3 소리 센서
-import photoResistor    # 4.4 조도 센서
+# import potentiometer    # 4.2 가변 저항
+# import soundSensor      # 4.3 소리 센서
+# import photoResistor    # 4.4 조도 센서
 
 # 5. 변수 정의
 processStatus = True    # 5.1
@@ -99,9 +100,13 @@ while processStatus:
 
         if data != None:
 
-            # [TODO] Data type except process
-            strPacket = data.decode("utf-8")  # serial 전송 데이터 디코드
-            dictPacket = ast.literal_eval(strPacket)  # serial 문자 데이터 > 가공 데이터
+            try:
+                # [TODO] Data type except process
+                strPacket = data.decode("utf-8")  # serial 전송 데이터 디코드
+                dictPacket = ast.literal_eval(strPacket)  # serial 문자 데이터 > 가공 데이터
+            except Exception:
+                print ('strPacket : ', strPacket)
+                print ('data processing error : ', Exception)
 
             # TODO temp
             print (getThreadCount())
@@ -109,15 +114,13 @@ while processStatus:
             # 1. 연결 체크 [check]
             if dictPacket['url'] == 'check':
                 print ('url [check]')
-                Serial.SendCmd(str({'param': -1}))
-
-                # TODO temp
-                if(Serial.lock == True) :
-                    Serial.lock = False
-                else :
-                    Serial.lock = True
-
-                print(Serial.lock)
+                Serial.SendCmd(str(
+                    {
+                        'msg'       : Define.getRtnMsg()['01'],
+                        'result'    : '',
+                        'callback'  : ''
+                    }
+                ))
 
             # 2. 시스템 명령 접근 [cmd]
             elif dictPacket['url'] == 'cmd':
@@ -146,7 +149,7 @@ while processStatus:
                 # dictThread['ledRGB'] = newProcess   # Thread 리스트에 추가   (종료시 접근하기 위해)
                 newProcess.start()
 
-            # TODO 5. 가변 저항 [potentiometer]
+            # 5. 가변 저항 [potentiometer]
             elif dictPacket['url'] == 'potentiometer':
                 print ('url [potentiometer]')
 
@@ -163,7 +166,7 @@ while processStatus:
                 # dictThread['potentiometer'] = newProcess   # Thread 리스트에 추가   (종료시 접근하기 위해)
                 newProcess.start()
 
-            # TODO 6. 소리 센서 [soundSensor]
+            # 6. 소리 센서 [soundSensor]
             elif dictPacket['url'] == 'soundSensor':
                 print ('url [soundSensor]')
 
@@ -180,7 +183,7 @@ while processStatus:
                 # dictThread['soundSensor'] = newProcess    # Thread 리스트에 추가   (종료시 접근하기 위해)
                 newProcess.start()
 
-            # TODO 7. 조도 센서 [photoResistor]
+            # 7. 조도 센서 [photoResistor]
             elif dictPacket['url'] == 'photoResistor':
                 print ('url [photoResistor]')
 

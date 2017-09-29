@@ -21,3 +21,13 @@ GPIO_PIN = {
 
 def getGpioPin () :
     return GPIO_PIN
+
+# MSG_TYPE 정리
+RTN_MSG = {
+    '01': 'RTN_SUCCESS', # 01. 성공 결과 값
+    '02': 'RTN_FAIL',    # 02. 실패 결과 값
+    '03': 'RTN_WAIT'     # 03. 대기 결과 값
+}
+
+def getRtnMsg () :
+    return RTN_MSG
